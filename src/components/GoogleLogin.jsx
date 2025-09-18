@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { jwtDecode } from 'jwt-decode';
 
 function GoogleLogin({ onSuccess }) {
-  const [status, setStatus] = useState('');
+  const [loginStatus, setLoginStatus] = useState(null); // null, 'success', 'error'
 
   useEffect(() => {
     // Check if Google script is already loaded
@@ -19,7 +19,8 @@ function GoogleLogin({ onSuccess }) {
       initializeGoogleSignIn();
     };
     script.onerror = () => {
-      setStatus('Failed to load Google Sign-In. Please check your connection.');
+      console.error('Failed to load Google Sign-In');
+      setLoginStatus('error');
     };
 
     document.body.appendChild(script);
@@ -36,22 +37,25 @@ function GoogleLogin({ onSuccess }) {
         callback: handleCredentialResponse,
       });
       
+      // Personnalisation du bouton avec style vert
       window.google.accounts.id.renderButton(
         document.getElementById('googleButtonDiv'),
-        { theme: 'outline', size: 'large', width: 250 }
+        { 
+          theme: 'filled_blue', 
+          size: 'large', 
+          width: 250,
+          text: 'signin_with',
+          shape: 'rectangular'
+        }
       );
       
-      setStatus('Google Sign-In is ready!');
     } catch (error) {
       console.error('Error initializing Google Sign-In:', error);
-      setStatus('Error initializing Google Sign-In. Check console for details.');
+      setLoginStatus('error');
     }
   };
 
   const handleCredentialResponse = (response) => {
-    console.log('Token received:', response.credential);
-    setStatus('Login successful! Processing...');
-    
     try {
       const userInfo = jwtDecode(response.credential);
       const credentials = {
@@ -63,29 +67,53 @@ function GoogleLogin({ onSuccess }) {
         picture: userInfo.picture,
       };
       
-      console.log('User Credentials:', credentials);
       if (onSuccess) onSuccess({ token: response.credential, credentials });
-      setStatus('User information decoded successfully!');
+      
+      // Afficher le message de succès
+      setLoginStatus('success');
+      
+      // Cacher le message après 5 secondes
+      setTimeout(() => {
+        setLoginStatus(null);
+      }, 5000);
+      
     } catch (error) {
       console.error('Error decoding token:', error);
-      setStatus('Error decoding token. Check console for details.');
+      setLoginStatus('error');
     }
   };
 
   return (
-    <div style={{ textAlign: 'center', padding: '20px' }}>
-      <h3 style={{ color: '#2d3748', marginBottom: '20px' }}>Connexion avec Google</h3>
-      <div id="googleButtonDiv" style={{ display: 'flex', justifyContent: 'center', margin: '20px 0' }}></div>
-      {status && (
+    <div style={{ textAlign: 'center', padding: '10px' }}>
+      <div id="googleButtonDiv" style={{ display: 'flex', justifyContent: 'center' }}></div>
+      
+      {loginStatus === 'success' && (
         <div style={{
+          marginTop: '15px',
           padding: '10px',
           borderRadius: '6px',
-          margin: '10px 0',
-          fontWeight: '500',
-          backgroundColor: status.includes('Error') ? '#fed7d7' : '#c6f6d5',
-          color: status.includes('Error') ? '#c53030' : '#2f855a'
+          backgroundColor: '#d4edda',
+          color: '#155724',
+          border: '1px solid #c3e6cb',
+          fontSize: '14px',
+          fontWeight: '500'
         }}>
-          {status}
+          ✅ Vous êtes connecté avec succès !
+        </div>
+      )}
+      
+      {loginStatus === 'error' && (
+        <div style={{
+          marginTop: '15px',
+          padding: '10px',
+          borderRadius: '6px',
+          backgroundColor: '#f8d7da',
+          color: '#721c24',
+          border: '1px solid #f5c6cb',
+          fontSize: '14px',
+          fontWeight: '500'
+        }}>
+          ❌ Erreur de connexion. Veuillez réessayer.
         </div>
       )}
     </div>

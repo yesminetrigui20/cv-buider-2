@@ -22,9 +22,7 @@ const CVPreview = forwardRef(({ data }, ref) => {
   const { personalInfo, profile, education, experience, skills, languages, additionalSections } = data || {}
 
   const getFullAddress = () => {
-    const parts = [personalInfo?.address, personalInfo?.city, personalInfo?.postalCode, personalInfo?.country].filter(
-      Boolean,
-    )
+    const parts = [personalInfo?.address, personalInfo?.city, personalInfo?.postalCode, personalInfo?.country].filter(Boolean)
     return parts.join(", ")
   }
 
@@ -45,7 +43,16 @@ const CVPreview = forwardRef(({ data }, ref) => {
     hasAdditionalSections
 
   return (
-    <div ref={ref} className="cv-container">
+    <div 
+      ref={ref} 
+      className="cv-container"
+      style={{
+        width: '210mm',
+        minHeight: '297mm',
+        transform: 'scale(0.95)',
+        transformOrigin: 'top center'
+      }}
+    >
       {!hasAnyData && (
         <div className="empty-state">
           <p>No CV data to display. Add your information to see the preview.</p>
@@ -56,14 +63,19 @@ const CVPreview = forwardRef(({ data }, ref) => {
         <>
           {/* Left Sidebar */}
           <div className="cv-sidebar">
-            {/* Profile Photo - only show if photo exists */}
+            {/* Profile Photo */}
             {personalInfo?.photo && (
               <div className="profile-photo-container">
-                <img src={personalInfo.photo || "/placeholder.svg"} alt="Profile" className="profile-photo" />
+                <img 
+                  src={personalInfo.photo} 
+                  alt="Profile" 
+                  className="profile-photo"
+                  crossOrigin="anonymous"
+                />
               </div>
             )}
 
-            {/* Name and Title - only show if name or title exists */}
+            {/* Name and Title */}
             {(personalInfo?.firstName || personalInfo?.lastName || personalInfo?.jobTitle) && (
               <div className="name-section">
                 {(personalInfo?.firstName || personalInfo?.lastName) && (
@@ -75,24 +87,19 @@ const CVPreview = forwardRef(({ data }, ref) => {
               </div>
             )}
 
-            {/* Profile Description - only show if profile exists */}
+            {/* Profile Description */}
             {profile && (
               <div className="profile-section">
                 <p className="profile-text">{profile}</p>
               </div>
             )}
 
-            {/* Contact Information - only show if any contact info exists */}
+            {/* Contact Information */}
             {(personalInfo?.phone ||
               personalInfo?.email ||
               getFullAddress() ||
               personalInfo?.website ||
-              personalInfo?.linkedin ||
-              personalInfo?.dateOfBirth ||
-              personalInfo?.nationality ||
-              personalInfo?.sex ||
-              personalInfo?.maritalStatus ||
-              personalInfo?.drivingLicense) && (
+              personalInfo?.linkedin) && (
               <div className="contact-section">
                 <h3 className="section-title">CONTACT</h3>
                 <div className="contact-items">
@@ -126,36 +133,6 @@ const CVPreview = forwardRef(({ data }, ref) => {
                       <span>{personalInfo.linkedin}</span>
                     </div>
                   )}
-                  {personalInfo?.dateOfBirth && (
-                    <div className="contact-item">
-                      <Calendar size={16} />
-                      <span>{personalInfo.dateOfBirth}</span>
-                    </div>
-                  )}
-                  {personalInfo?.nationality && (
-                    <div className="contact-item">
-                      <User size={16} />
-                      <span>{personalInfo.nationality}</span>
-                    </div>
-                  )}
-                  {personalInfo?.sex && (
-                    <div className="contact-item">
-                      <User size={16} />
-                      <span>{personalInfo.sex.charAt(0).toUpperCase() + personalInfo.sex.slice(1)}</span>
-                    </div>
-                  )}
-                  {personalInfo?.maritalStatus && (
-                    <div className="contact-item">
-                      <Heart size={16} />
-                      <span>{personalInfo.maritalStatus}</span>
-                    </div>
-                  )}
-                  {personalInfo?.drivingLicense && (
-                    <div className="contact-item">
-                      <GitFork size={16} />
-                      <span>{personalInfo.drivingLicense}</span>
-                    </div>
-                  )}
                 </div>
               </div>
             )}
@@ -163,7 +140,7 @@ const CVPreview = forwardRef(({ data }, ref) => {
 
           {/* Right Main Content */}
           <div className="cv-main">
-            {/* Education Section - only show if education data exists */}
+            {/* Education Section */}
             {education?.length > 0 && (
               <div className="main-section">
                 <h3 className="main-section-title">EDUCATION</h3>
@@ -184,7 +161,7 @@ const CVPreview = forwardRef(({ data }, ref) => {
               </div>
             )}
 
-            {/* Experience Section - only show if experience data exists */}
+            {/* Experience Section */}
             {experience?.length > 0 && (
               <div className="main-section">
                 <h3 className="main-section-title">EXPERIENCE</h3>
@@ -204,7 +181,7 @@ const CVPreview = forwardRef(({ data }, ref) => {
               </div>
             )}
 
-            {/* Skills Section - only show if skills data exists */}
+            {/* Skills Section */}
             {skills?.length > 0 && (
               <div className="main-section">
                 <h3 className="main-section-title">SKILLS</h3>
@@ -219,170 +196,6 @@ const CVPreview = forwardRef(({ data }, ref) => {
                       </div>
                     </div>
                   ))}
-                </div>
-              </div>
-            )}
-
-            {/* Languages Section - only show if languages data exists */}
-            {languages?.length > 0 && (
-              <div className="main-section">
-                <h3 className="main-section-title">LANGUAGES</h3>
-                <div className="section-content">
-                  {languages.map((lang, index) => (
-                    <div key={index} className="language-item">
-                      <span className="language-name">{lang.language}</span>
-                      <span className="language-level"> - Level {lang.level}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Additional Sections - only show if additional sections data exists */}
-            {hasAdditionalSections && (
-              <div className="main-section">
-                <h3 className="main-section-title">ADDITIONAL SECTIONS</h3>
-                <div className="section-content">
-                  {personalInfo?.customFieldTitle && personalInfo?.customFieldValue && (
-                    <div className="additional-item">
-                      <h4 className="additional-title">
-                        <Info size={16} /> {personalInfo.customFieldTitle}
-                      </h4>
-                      <p className="additional-description">{personalInfo.customFieldValue}</p>
-                    </div>
-                  )}
-
-                  {additionalSections?.signature?.length > 0 && (
-                    <div className="additional-item">
-                      <h4 className="additional-title">
-                        <Feather size={16} /> Signature
-                      </h4>
-                      {additionalSections.signature.map((sig, index) => (
-                        <div key={index} className="additional-subitem">
-                          <p className="additional-description">
-                            {sig.ville}, {sig.date}
-                          </p>
-                          <div className="signature-container">
-                            <img
-                              src={sig.signatureImage || "/placeholder.svg"}
-                              alt="Signature"
-                              className="signature-image"
-                            />
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-
-                  {additionalSections?.courses?.length > 0 && (
-                    <div className="additional-item">
-                      <h4 className="additional-title">
-                        <BookOpen size={16} /> Courses
-                      </h4>
-                      {additionalSections.courses.map((course, index) => (
-                        <div key={index} className="additional-subitem">
-                          <p className="additional-subtitle">{course.cours}</p>
-                          <p className="additional-description">
-                            {course.startMonth} {course.startYear} - {course.description}
-                          </p>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-
-                  {additionalSections?.internships?.length > 0 && (
-                    <div className="additional-item">
-                      <h4 className="additional-title">
-                        <Briefcase size={16} /> Internships
-                      </h4>
-                      {additionalSections.internships.map((internship, index) => (
-                        <div key={index} className="additional-subitem">
-                          <p className="additional-subtitle">
-                            {internship.poste}, {internship.employeur}
-                          </p>
-                          <p className="additional-description">
-                            {getDuration(
-                              internship.startMonth,
-                              internship.startYear,
-                              internship.endMonth,
-                              internship.endYear,
-                            )}
-                          </p>
-                          <p className="additional-description">{internship.description}</p>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-
-                  {additionalSections?.extracurricular?.length > 0 && (
-                    <div className="additional-item">
-                      <h4 className="additional-title">
-                        <Star size={16} /> Extracurricular Activities
-                      </h4>
-                      {additionalSections.extracurricular.map((activity, index) => (
-                        <div key={index} className="additional-subitem">
-                          <p className="additional-subtitle">
-                            {activity.poste}, {activity.employeur}
-                          </p>
-                          <p className="additional-description">
-                            {getDuration(
-                              activity.startMonth,
-                              activity.startYear,
-                              activity.endMonth,
-                              activity.endYear,
-                              activity.currentJob,
-                            )}
-                          </p>
-                          <p className="additional-description">{activity.description}</p>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-
-                  {additionalSections?.qualities?.length > 0 && (
-                    <div className="additional-item">
-                      <h4 className="additional-title">
-                        <SquareCheckBig size={16} /> Qualities
-                      </h4>
-                      {additionalSections.qualities.map((quality, index) => (
-                        <div key={index} className="additional-subitem">
-                          <p className="additional-subtitle">{quality.title}</p>
-                          <p className="additional-description">{quality.description}</p>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-
-                  {additionalSections?.certificates?.length > 0 && (
-                    <div className="additional-item">
-                      <h4 className="additional-title">
-                        <BookOpen size={16} /> Certificates
-                      </h4>
-                      {additionalSections.certificates.map((certificate, index) => (
-                        <div key={index} className="additional-subitem">
-                          <p className="additional-subtitle">{certificate.certificat}</p>
-                          <p className="additional-description">
-                            {certificate.month} {certificate.year}
-                          </p>
-                          <p className="additional-description">{certificate.description}</p>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-
-                  {additionalSections?.achievements?.length > 0 && (
-                    <div className="additional-item">
-                      <h4 className="additional-title">
-                        <Star size={16} /> Achievements
-                      </h4>
-                      {additionalSections.achievements.map((achievement, index) => (
-                        <div key={index} className="additional-subitem">
-                          <p className="additional-subtitle">{achievement.title}</p>
-                          <p className="additional-description">{achievement.description}</p>
-                        </div>
-                      ))}
-                    </div>
-                  )}
                 </div>
               </div>
             )}
