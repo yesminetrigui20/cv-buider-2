@@ -1,0 +1,387 @@
+.cv-container {
+  display: flex;
+  width: 210mm;
+  height: 297mm;
+  background: white;
+  font-family: "Arial", sans-serif;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+/* Left Sidebar Styles */
+.cv-sidebar {
+  width: 40%;
+  background: white;
+  padding: 40px 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.profile-photo-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.profile-photo {
+  width: 150px;
+  height: 150px;
+  border-radius: 8px;
+  object-fit: cover;
+  border: 3px solid #f0f0f0;
+}
+
+.profile-photo-placeholder {
+  width: 150px;
+  height: 150px;
+  background: #f0f0f0;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #999;
+  font-size: 14px;
+}
+
+.name-section {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.name {
+  font-size: 32px;
+  font-weight: bold;
+  color: #2c5f5f;
+  margin: 0;
+  line-height: 1.2;
+  letter-spacing: 1px;
+}
+
+.job-title {
+  font-size: 16px;
+  color: #666;
+  margin: 8px 0 0 0;
+  font-weight: normal;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.profile-section {
+  margin-bottom: 20px;
+}
+
+.profile-text {
+  font-size: 14px;
+  line-height: 1.6;
+  color: #444;
+  text-align: justify;
+  margin: 0;
+}
+
+.contact-section {
+  margin-top: auto;
+}
+
+.section-title {
+  font-size: 18px;
+  font-weight: bold;
+  color: #2c5f5f;
+  margin: 0 0 20px 0;
+  letter-spacing: 1px;
+}
+
+.contact-items {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.contact-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 14px;
+  color: #555;
+}
+
+.contact-item svg {
+  color: #2c5f5f;
+  flex-shrink: 0;
+}
+
+/* Right Main Content Styles */
+.cv-main {
+  width: 60%;
+  background: linear-gradient(135deg, #4a9b9b 0%, #5fb3b3 100%);
+  padding: 40px 30px;
+  color: white;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Geometric background pattern */
+.cv-main::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: linear-gradient(45deg, rgba(255, 255, 255, 0.05) 25%, transparent 25%),
+    linear-gradient(-45deg, rgba(255, 255, 255, 0.05) 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, rgba(255, 255, 255, 0.05) 75%),
+    linear-gradient(-45deg, transparent 75%, rgba(255, 255, 255, 0.05) 75%);
+  background-size: 60px 60px;
+  background-position: 0 0, 0 30px, 30px -30px, -30px 0px;
+  pointer-events: none;
+}
+
+.main-section {
+  position: relative;
+  z-index: 1;
+  margin-bottom: 40px;
+}
+
+.main-section:last-child {
+  margin-bottom: 0;
+}
+
+.main-section-title {
+  font-size: 24px;
+  font-weight: bold;
+  margin: 0 0 25px 0;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: white;
+}
+
+.section-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Education Styles */
+.education-item {
+  margin-bottom: 20px;
+}
+
+.education-degree {
+  font-size: 16px;
+  font-weight: bold;
+  margin: 0 0 5px 0;
+  color: white;
+  line-height: 1.3;
+}
+
+.education-date {
+  font-size: 14px;
+  margin: 0 0 8px 0;
+  color: rgba(255, 255, 255, 0.9);
+  font-style: italic;
+}
+
+.education-description {
+  font-size: 14px;
+  line-height: 1.5;
+  margin: 0;
+  color: rgba(255, 255, 255, 0.95);
+}
+
+/* Experience Styles */
+.experience-item {
+  margin-bottom: 20px;
+}
+
+.experience-title {
+  font-size: 16px;
+  font-weight: bold;
+  margin: 0 0 5px 0;
+  color: white;
+  line-height: 1.3;
+}
+
+.experience-date {
+  font-size: 14px;
+  margin: 0 0 8px 0;
+  color: rgba(255, 255, 255, 0.9);
+  font-style: italic;
+}
+
+.experience-description {
+  font-size: 14px;
+  line-height: 1.5;
+  margin: 0;
+  color: rgba(255, 255, 255, 0.95);
+}
+
+/* Skills Styles */
+.skills-content {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.skill-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.skill-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.skill-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: white;
+  letter-spacing: 1px;
+}
+
+.skill-bar {
+  height: 8px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.skill-progress {
+  height: 100%;
+  background: white;
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+/* Languages Styles */
+.language-item {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.95);
+  margin-bottom: 8px;
+}
+
+.language-name {
+  font-weight: 600;
+}
+
+.language-level {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* Additional Sections Styles */
+.additional-item {
+  margin-bottom: 25px;
+}
+
+.additional-title {
+  font-size: 16px;
+  font-weight: bold;
+  margin: 0 0 12px 0;
+  color: white;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.additional-title svg {
+  color: white;
+  flex-shrink: 0;
+}
+
+.additional-subitem {
+  margin-bottom: 15px;
+  padding-left: 24px;
+}
+
+.additional-subtitle {
+  font-size: 14px;
+  font-weight: 600;
+  margin: 0 0 4px 0;
+  color: white;
+}
+
+.additional-description {
+  font-size: 13px;
+  line-height: 1.4;
+  margin: 0 0 4px 0;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* Signature specific styles */
+.signature-container {
+  margin-top: 8px;
+}
+
+.signature-image {
+  height: 40px;
+  max-width: 120px;
+  object-fit: contain;
+  filter: brightness(0) invert(1);
+}
+
+/* Empty state styles for when no CV data is present */
+.empty-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  min-height: 400px;
+  background: #f8f9fa;
+  border: 2px dashed #dee2e6;
+  border-radius: 8px;
+}
+
+.empty-state p {
+  color: #6c757d;
+  font-size: 16px;
+  text-align: center;
+  margin: 0;
+  font-family: "Arial", sans-serif;
+}
+
+/* Print Styles */
+@media print {
+  .cv-container {
+    box-shadow: none;
+    width: 100%;
+    height: 100vh;
+  }
+
+  .cv-main::before {
+    background-size: 40px 40px;
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .cv-container {
+    flex-direction: column;
+    width: 100%;
+    height: auto;
+  }
+
+  .cv-sidebar,
+  .cv-main {
+    width: 100%;
+  }
+
+  .cv-sidebar {
+    padding: 30px 20px;
+  }
+
+  .cv-main {
+    padding: 30px 20px;
+  }
+
+  .name {
+    font-size: 28px;
+  }
+
+  .main-section-title {
+    font-size: 20px;
+  }
+}
