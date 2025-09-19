@@ -217,45 +217,36 @@
   margin: 0;
   color: #555555; /* Remplacé */
 }
-
-/* Skills Styles */
-.skills-content {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
+/* Skills Section - Version "Nom Niveau" */
+.skill-item-simple {
+  padding: 8px 12px;
+  background: #f8f9fa;
+  border-radius: 6px;
+  border-left: 3px solid #2c5f5f;
+  margin-bottom: 4px;
 }
 
-.skill-item {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.skill-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.skill-name {
+.skill-text-simple {
   font-size: 14px;
+  color: #2c3e50;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Optionnel : petit badge pour le niveau */
+.skill-text-simple .level {
+  font-size: 13px;
   font-weight: 600;
-  color: #2c3e50; /* Remplacé */
-  letter-spacing: 1px;
-}
-
-.skill-bar {
-  height: 8px;
-  background: #e0e0e0; /* Remplacé */
+  color: #2c5f5f;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 2px 6px;
+  background: #e8f5e8;
   border-radius: 4px;
-  overflow: hidden;
-}
-
-.skill-progress {
-  height: 100%;
-  background: #2c5f5f; /* Vert - Remplacé */
-  border-radius: 4px;
-  transition: width 0.3s ease;
+  border: 1px solid #c8e6c9;
+  white-space: nowrap;
 }
 
 /* Languages Styles */
@@ -264,7 +255,7 @@
   color: #555555; /* Remplacé */
   margin-bottom: 8px;
   padding: 8px 12px;
-  background: #f8f9fa; /* Remplacé */
+  background: #e8f5e8; /* Remplacé */
   border-radius: 6px;
   border-left: 3px solid #2c5f5f; /* Vert - Remplacé */
 }
@@ -275,7 +266,7 @@
 }
 
 .language-level {
-  color: #666666; /* Remplacé */
+  color: #797777; /* Remplacé */
 }
 
 /* Additional Sections Styles */

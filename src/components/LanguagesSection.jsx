@@ -14,7 +14,7 @@ const LanguagesSection = ({ data, updateData }) => {
   };
 
   const addLanguage = () => {
-    updateData('languages', [...data, {}]);
+    updateData('languages', [...data, { language: '', level: '' }]);
   };
 
   return (
@@ -28,32 +28,44 @@ const LanguagesSection = ({ data, updateData }) => {
       {isExpanded && (
         <CardContent className="pt-0 space-y-4">
           {data.map((lang, index) => (
-            <div key={index} className="flex space-x-2">
+            <div key={index} className="flex space-x-2 items-end">
               <Input
                 placeholder="Langue"
                 value={lang.language || ''}
                 onChange={(e) => handleChange(index, 'language', e.target.value)}
                 className="w-1/2 bg-gray-800 border-gray-600 text-white placeholder-gray-400"
               />
-              <Select onValueChange={(value) => handleChange(index, 'level', value)} value={lang.level || ''}>
-                <SelectTrigger className="w-1/2 bg-gray-800 border-gray-600 text-white placeholder-gray-400">
-                  <SelectValue placeholder="Niveau (1-5)" />
+              
+              {/* Select shadcn/ui avec les options de votre screenshot */}
+              <Select 
+                value={lang.level || ''} 
+                onValueChange={(value) => handleChange(index, 'level', value)}
+              >
+                <SelectTrigger className="w-1/2 bg-gray-800 border-gray-600 text-white h-10">
+                  <SelectValue placeholder="Niveau" />
                 </SelectTrigger>
-                <SelectContent className="bg-gray-800 border-gray-600 text-white">
-                  <SelectItem value="1">1 (Débutant)</SelectItem>
-                  <SelectItem value="2">2 (Élémentaire)</SelectItem>
-                  <SelectItem value="3">3 (Intermédiaire)</SelectItem>
-                  <SelectItem value="4">4 (Avancé)</SelectItem>
-                  <SelectItem value="5">5 (Natif)</SelectItem>
+                <SelectContent className="bg-gray-800 border-gray-600">
+                  <SelectItem value="Débutant">Débutant</SelectItem>
+                  <SelectItem value="Intermédiaire">Intermédiaire</SelectItem>
+                  <SelectItem value="Bien">Bien</SelectItem>
+                  <SelectItem value="Très bien">Très bien</SelectItem>
+                  <SelectItem value="Excellent">Excellent</SelectItem>
+                  <SelectItem value="Courant">Courant</SelectItem>
+                  <SelectItem value="A1">A1</SelectItem>
+                  <SelectItem value="A2">A2</SelectItem>
+                  <SelectItem value="B1">B1</SelectItem>
+                  <SelectItem value="B2">B2</SelectItem>
+                  <SelectItem value="C1">C1</SelectItem>
+                  <SelectItem value="C2">C2</SelectItem>
                 </SelectContent>
               </Select>
             </div>
           ))}
           <button
             onClick={addLanguage}
-            className="mt-2 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+            className="mt-2 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition-colors"
           >
-            Ajouter une langue
+            + Ajouter une langue
           </button>
         </CardContent>
       )}
@@ -61,4 +73,4 @@ const LanguagesSection = ({ data, updateData }) => {
   );
 };
 
-export default LanguagesSection;
+export default LanguagesSection; 
