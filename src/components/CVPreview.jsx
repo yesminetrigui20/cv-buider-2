@@ -26,29 +26,39 @@ const CVPreview = forwardRef(({ data }, ref) => {
     return parts.join(", ")
   }
 
+  // Fonction getDuration améliorée pour gérer les valeurs undefined
   const getDuration = (startMonth, startYear, endMonth, endYear, isCurrent) => {
-    if (isCurrent) return `${startMonth} ${startYear} - Aujourd'hui`
-    return `${startMonth} ${startYear} - ${endMonth} ${endYear}` || "Dates non spécifiées"
+    const start = `${startMonth || ''} ${startYear || ''}`.trim()
+    const end = isCurrent ? "Aujourd'hui" : `${endMonth || ''} ${endYear || ''}`.trim()
+    
+    if (!start && !end) return "Dates non spécifiées"
+    if (start && end) return `${start} - ${end}`
+    if (start) return `${start}`
+    return `${end}`
   }
 
-  // Correction : Vérifier si au moins un sous-tableau a du contenu
-  const hasAdditionalContent = 
-    (additionalSections?.courses?.length > 0) ||
-    (additionalSections?.qualities?.length > 0) ||
-    (additionalSections?.certificates?.length > 0) ||
-    (additionalSections?.achievements?.length > 0) ||
-    (additionalSections?.internships?.length > 0) ||
-    (additionalSections?.extracurricular?.length > 0) ||
-    (additionalSections?.signature?.length > 0);
+  // Vérification améliorée pour les sections supplémentaires
+  const hasAdditionalContent = () => {
+    const sections = additionalSections || {}
+    return (
+      (sections.courses && sections.courses.length > 0) ||
+      (sections.qualities && sections.qualities.length > 0) ||
+      (sections.certificates && sections.certificates.length > 0) ||
+      (sections.achievements && sections.achievements.length > 0) ||
+      (sections.internships && sections.internships.length > 0) ||
+      (sections.extracurricular && sections.extracurricular.length > 0) ||
+      (sections.signature && sections.signature.length > 0)
+    )
+  }
 
   const hasAnyData =
     personalInfo ||
     profile ||
-    education?.length > 0 ||
-    experience?.length > 0 ||
-    skills?.length > 0 ||
-    languages?.length > 0 ||
-    hasAdditionalContent
+    (education && education.length > 0) ||
+    (experience && experience.length > 0) ||
+    (skills && skills.length > 0) ||
+    (languages && languages.length > 0) ||
+    hasAdditionalContent()
 
   return (
     <div 
@@ -56,11 +66,11 @@ const CVPreview = forwardRef(({ data }, ref) => {
       className="cv-container"
       style={{
         width: '210mm',
-        minHeight: '297mm',
+        height: 'auto',  // ← CORRECTION : Objet valide maintenant
         transform: 'scale(0.95)',
         transformOrigin: 'top center'
       }}
-    >
+>
       {!hasAnyData && (
         <div className="empty-state">
           <p>Aucune donnée de CV à afficher. Ajoutez vos informations pour voir l'aperçu.</p>
@@ -102,7 +112,7 @@ const CVPreview = forwardRef(({ data }, ref) => {
               </div>
             )}
 
-            {/* Contact Information - CORRIGÉE */}
+            {/* Contact Information */}
             {(personalInfo?.phone ||
               personalInfo?.email ||
               getFullAddress() ||
@@ -184,18 +194,18 @@ const CVPreview = forwardRef(({ data }, ref) => {
           {/* Right Main Content */}
           <div className="cv-main">
             {/* Education Section */}
-            {education?.length > 0 && (
+            {education && education.length > 0 && (
               <div className="main-section">
                 <h3 className="main-section-title">FORMATION</h3>
                 <div className="section-content">
                   {education.map((edu, index) => (
                     <div key={index} className="education-item">
                       <h4 className="education-degree">
-                        {edu.degree}, {edu.school}
+                        {edu.degree || 'Non spécifié'}, {edu.school || 'Non spécifié'}
                       </h4>
                       <p className="education-date">
-                        ({getDuration(edu.startMonth, edu.startYear, edu.endMonth, edu.endYear, edu.isCurrent)},{" "}
-                        {edu.city})
+                        ({getDuration(edu.startMonth, edu.startYear, edu.endMonth, edu.endYear, edu.isCurrent || false)},{" "}
+                        {edu.city || 'Ville non spécifiée'})
                       </p>
                       {edu.description && <p className="education-description">{edu.description}</p>}
                     </div>
@@ -205,17 +215,17 @@ const CVPreview = forwardRef(({ data }, ref) => {
             )}
 
             {/* Experience Section */}
-            {experience?.length > 0 && (
+            {experience && experience.length > 0 && (
               <div className="main-section">
                 <h3 className="main-section-title">EXPÉRIENCE PROFESSIONNELLE</h3>
                 <div className="section-content">
                   {experience.map((exp, index) => (
                     <div key={index} className="experience-item">
                       <h4 className="experience-title">
-                        {exp.jobTitle}, {exp.employer}
+                        {exp.jobTitle || 'Non spécifié'}, {exp.employer || 'Non spécifié'}
                       </h4>
                       <p className="experience-date">
-                        ({getDuration(exp.startMonth, exp.startYear, exp.endMonth, exp.endYear, exp.isCurrent)})
+                        ({getDuration(exp.startMonth, exp.startYear, exp.endMonth, exp.endYear, exp.isCurrent || false)})
                       </p>
                       {exp.description && <p className="experience-description">{exp.description}</p>}
                     </div>
@@ -225,14 +235,14 @@ const CVPreview = forwardRef(({ data }, ref) => {
             )}
 
             {/* Skills Section - Version "Nom : Niveau" */}
-            {skills?.length > 0 && (
+            {skills && skills.length > 0 && (
               <div className="main-section">
                 <h3 className="main-section-title">COMPÉTENCES</h3>
                 <div className="section-content">
                   {skills.map((skill, index) => (
                     <div key={index} className="skill-item-simple">
                       <div className="skill-text-simple">
-                        <span className="skill-name-display">{skill.name}</span>
+                        <span className="skill-name-display">{skill.name || 'Non spécifié'}</span>
                         <span className="skill-level-display"> : {skill.level || "Non spécifié"}</span>
                       </div>
                     </div>
@@ -242,22 +252,22 @@ const CVPreview = forwardRef(({ data }, ref) => {
             )}
 
             {/* Languages Section */}
-            {languages?.length > 0 && (
+            {languages && languages.length > 0 && (
               <div className="main-section">
                 <h3 className="main-section-title">LANGUES</h3>
                 <div className="section-content">
                   {languages.map((lang, index) => (
                     <div key={index} className="language-item">
-                      <span className="language-name">{lang.language}: </span>
-                      <span className="language-level">{lang.level}</span>
+                      <span className="language-name">{lang.language || 'Non spécifié'}: </span>
+                      <span className="language-level">{lang.level || 'Non spécifié'}</span>
                     </div>
                   ))}
                 </div>
               </div>
             )}
 
-            {/* Additional Sections - CORRIGÉE avec vérification du contenu */}
-            {hasAdditionalContent && (
+            {/* Additional Sections - CORRECTION COMPLÈTE */}
+            {hasAdditionalContent() && (
               <div className="main-section">
                 <h3 className="main-section-title">INFORMATIONS COMPLÉMENTAIRES</h3>
                 <div className="section-content">
@@ -273,7 +283,7 @@ const CVPreview = forwardRef(({ data }, ref) => {
                   )}
 
                   {/* Courses */}
-                  {additionalSections?.courses?.length > 0 && (
+                  {additionalSections?.courses && additionalSections.courses.length > 0 && (
                     <div className="additional-item">
                       <h4 className="additional-title">
                         <BookOpen size={16} />
@@ -281,9 +291,9 @@ const CVPreview = forwardRef(({ data }, ref) => {
                       </h4>
                       {additionalSections.courses.map((course, index) => (
                         <div key={index} className="additional-subitem">
-                          <p className="additional-subtitle">{course.cours || course.title}</p>
+                          <p className="additional-subtitle">{course.cours || course.title || 'Non spécifié'}</p>
                           <p className="additional-description">
-                            {course.startMonth} {course.startYear} - {course.description}
+                            {course.startMonth} {course.startYear} - {course.description || 'Non spécifié'}
                           </p>
                         </div>
                       ))}
@@ -291,7 +301,7 @@ const CVPreview = forwardRef(({ data }, ref) => {
                   )}
 
                   {/* Qualities */}
-                  {additionalSections?.qualities?.length > 0 && (
+                  {additionalSections?.qualities && additionalSections.qualities.length > 0 && (
                     <div className="additional-item">
                       <h4 className="additional-title">
                         <SquareCheckBig size={16} />
@@ -299,7 +309,7 @@ const CVPreview = forwardRef(({ data }, ref) => {
                       </h4>
                       {additionalSections.qualities.map((quality, index) => (
                         <div key={index} className="additional-subitem">
-                          <p className="additional-subtitle">{quality.title || quality.name}</p>
+                          <p className="additional-subtitle">{quality.title || quality.name || 'Non spécifié'}</p>
                           {quality.description && (
                             <p className="additional-description">{quality.description}</p>
                           )}
@@ -309,7 +319,7 @@ const CVPreview = forwardRef(({ data }, ref) => {
                   )}
 
                   {/* Certificates */}
-                  {additionalSections?.certificates?.length > 0 && (
+                  {additionalSections?.certificates && additionalSections.certificates.length > 0 && (
                     <div className="additional-item">
                       <h4 className="additional-title">
                         <BookOpen size={16} />
@@ -317,20 +327,17 @@ const CVPreview = forwardRef(({ data }, ref) => {
                       </h4>
                       {additionalSections.certificates.map((certificate, index) => (
                         <div key={index} className="additional-subitem">
-                          <p className="additional-subtitle">{certificate.certificat || certificate.title}</p>
+                          <p className="additional-subtitle">{certificate.certificat || certificate.title || 'Non spécifié'}</p>
                           <p className="additional-description">
-                            {certificate.month} {certificate.year}
+                            {certificate.month || ''} {certificate.year || ''} {certificate.description ? `- ${certificate.description}` : ''}
                           </p>
-                          {certificate.description && (
-                            <p className="additional-description">{certificate.description}</p>
-                          )}
                         </div>
                       ))}
                     </div>
                   )}
 
                   {/* Achievements */}
-                  {additionalSections?.achievements?.length > 0 && (
+                  {additionalSections?.achievements && additionalSections.achievements.length > 0 && (
                     <div className="additional-item">
                       <h4 className="additional-title">
                         <Star size={16} />
@@ -338,7 +345,7 @@ const CVPreview = forwardRef(({ data }, ref) => {
                       </h4>
                       {additionalSections.achievements.map((achievement, index) => (
                         <div key={index} className="additional-subitem">
-                          <p className="additional-subtitle">{achievement.title || achievement.name}</p>
+                          <p className="additional-subtitle">{achievement.title || achievement.name || 'Non spécifié'}</p>
                           {achievement.description && (
                             <p className="additional-description">{achievement.description}</p>
                           )}
@@ -347,8 +354,8 @@ const CVPreview = forwardRef(({ data }, ref) => {
                     </div>
                   )}
 
-                  {/* Internships - CORRIGÉE avec ville */}
-                  {additionalSections?.internships?.length > 0 && (
+                  {/* Internships - CORRIGÉE avec gestion des undefined */}
+                  {additionalSections?.internships && additionalSections.internships.length > 0 && (
                     <div className="additional-item">
                       <h4 className="additional-title">
                         <Briefcase size={16} />
@@ -357,7 +364,7 @@ const CVPreview = forwardRef(({ data }, ref) => {
                       {additionalSections.internships.map((internship, index) => (
                         <div key={index} className="additional-subitem">
                           <p className="additional-subtitle">
-                            {internship.poste}, {internship.employeur}
+                            {internship.poste || 'Non spécifié'}, {internship.employeur || 'Non spécifié'}
                           </p>
                           <p className="additional-description">
                             {getDuration(internship.startMonth, internship.startYear, internship.endMonth, internship.endYear, internship.isCurrent || false)}, {internship.ville || internship.city || 'Ville non spécifiée'}
@@ -370,8 +377,8 @@ const CVPreview = forwardRef(({ data }, ref) => {
                     </div>
                   )}
 
-                  {/* Extracurricular Activities - CORRIGÉE avec ville */}
-                  {additionalSections?.extracurricular?.length > 0 && (
+                  {/* Extracurricular Activities - CORRIGÉE avec gestion des undefined */}
+                  {additionalSections?.extracurricular && additionalSections.extracurricular.length > 0 && (
                     <div className="additional-item">
                       <h4 className="additional-title">
                         <Star size={16} />
@@ -380,7 +387,7 @@ const CVPreview = forwardRef(({ data }, ref) => {
                       {additionalSections.extracurricular.map((activity, index) => (
                         <div key={index} className="additional-subitem">
                           <p className="additional-subtitle">
-                            {activity.poste}, {activity.employeur}
+                            {activity.poste || 'Non spécifié'}, {activity.employeur || 'Non spécifié'}
                           </p>
                           <p className="additional-description">
                             {getDuration(activity.startMonth, activity.startYear, activity.endMonth, activity.endYear, activity.isCurrent || activity.currentJob || false)}, {activity.ville || activity.city || 'Ville non spécifiée'}
@@ -394,7 +401,7 @@ const CVPreview = forwardRef(({ data }, ref) => {
                   )}
 
                   {/* Signature */}
-                  {additionalSections?.signature?.length > 0 && (
+                  {additionalSections?.signature && additionalSections.signature.length > 0 && (
                     <div className="additional-item">
                       <h4 className="additional-title">
                         <Feather size={16} />
@@ -402,7 +409,7 @@ const CVPreview = forwardRef(({ data }, ref) => {
                       </h4>
                       {additionalSections.signature.map((sig, index) => (
                         <div key={index} className="additional-subitem">
-                          <p className="additional-description">{sig.ville}, {sig.date}</p>
+                          <p className="additional-description">{sig.ville || 'Non spécifiée'}, {sig.date || 'Non spécifiée'}</p>
                           {sig.signatureImage && (
                             <div className="signature-container">
                               <img src={sig.signatureImage} alt="Signature" className="signature-image" />
