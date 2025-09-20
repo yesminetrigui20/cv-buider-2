@@ -3,6 +3,7 @@ import Header from './components/Header.jsx';
 import FormSection from './components/FormSection.jsx';
 import CVPreview from './components/CVPreview.jsx';
 import GoogleLogin from './components/GoogleLogin.jsx';
+import LinkedInLogin from './components/LinkedInLogin.jsx'; // Ajout de l'import
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import './App.css';
@@ -57,6 +58,17 @@ function App() {
   const handleGoogleSuccess = (credential) => {
     console.log('Token received in App:', credential);
   };
+
+  const handleLinkedInSuccess = (response) => {
+  console.log('✅ Vérification LinkedIn réussie:', response);
+  
+  // Stocker seulement le statut de vérification
+  localStorage.setItem('linkedin_verified', 'true');
+  localStorage.setItem('linkedin_verification_token', response.token);
+  
+  // Optionnel: Afficher un message à l'utilisateur
+  alert('✅ Vérification LinkedIn réussie ! Votre identité a été confirmée.');
+};
 
   const handleDownloadCV = async () => {
     setIsGenerating(true);
@@ -280,9 +292,13 @@ function App() {
         isGenerating={isGenerating}
       />
       
-      <GoogleLogin onSuccess={handleGoogleSuccess} />
+      {/* Section des boutons de connexion - AJOUT DE LINKEDIN */}
+      <div className="flex justify-center space-x-4 py-4 bg-gray-800 border-b border-gray-700">
+        <GoogleLogin onSuccess={handleGoogleSuccess} />
+        <LinkedInLogin onSuccess={handleLinkedInSuccess} />
+      </div>
       
-      <div className="flex flex-1" style={{ height: 'calc(100vh - 160px)' }}>
+      <div className="flex flex-1" style={{ height: 'calc(100vh - 200px)' }}>
         <div className="w-1/2 bg-gray-800 border-r border-gray-700 overflow-y-auto">
           <FormSection data={cvData} updateData={updateData} />
         </div>
