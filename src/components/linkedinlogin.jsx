@@ -40,7 +40,7 @@ function LinkedInLogin({ onSuccess }) {
     try {
       console.log('✅ Code de vérification LinkedIn reçu:', code);
       
-      // SIMULATION SUCCÈS - Seulement la vérification
+      
       if (onSuccess) {
         onSuccess({ 
           token: 'linkedin_verified_' + Math.random().toString(36).substring(2, 9),
@@ -51,7 +51,7 @@ function LinkedInLogin({ onSuccess }) {
       
       setLoginStatus('success');
       
-      // Message de succès pendant 3 secondes puis redirection
+      
       setTimeout(() => {
         window.location.href = '/';
       }, 3000);

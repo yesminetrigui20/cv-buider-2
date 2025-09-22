@@ -39,7 +39,7 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
-  --color-green-accent: oklch(0.6 0.2 140); /* Touche de vert pour accents */
+  --color-green-accent: oklch(0.6 0.2 140); 
 }
 
 :root {

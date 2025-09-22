@@ -262,7 +262,7 @@ const PersonalInformation = ({ data, updateData }) => {
                 <SelectContent className="bg-gray-800 border-gray-600 text-gray-200">
                   <SelectItem value="homme">Homme</SelectItem>
                   <SelectItem value="femme">Femme</SelectItem>
-                  <SelectItem value="autre">Autre</SelectItem>
+            
                 </SelectContent>
               </Select>
             </div>

@@ -2,7 +2,7 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card.jsx';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { ChevronUp, Calendar } from 'lucide-react';
+import { ChevronUp, Calendar, Trash2 } from 'lucide-react'; 
 
 const EducationSection = ({ data, updateData }) => {
   const [isExpanded, setIsExpanded] = React.useState(false);
@@ -42,6 +42,12 @@ const EducationSection = ({ data, updateData }) => {
     updateData('education', [...data, {}]);
   };
 
+  
+  const removeEducation = (index) => {
+    const newData = data.filter((_, i) => i !== index);
+    updateData('education', newData);
+  };
+
   return (
     <Card className="bg-gray-700 border-gray-600 rounded-none border-t-0 border-l-0 border-r-0">
       <CardHeader className="cursor-pointer hover:bg-gray-650 transition-colors" onClick={() => setIsExpanded(!isExpanded)}>
@@ -53,7 +59,17 @@ const EducationSection = ({ data, updateData }) => {
       {isExpanded && (
         <CardContent className="pt-0 space-y-4">
           {data.map((edu, index) => (
-            <div key={index} className="space-y-2">
+            <div key={index} className="space-y-2 p-4 bg-gray-750 rounded-lg border border-gray-600 relative">
+              
+            
+              <button
+                onClick={() => removeEducation(index)}
+                className="absolute top-2 right-2 p-1 text-red-400 hover:text-red-300 hover:bg-red-900 rounded transition-colors"
+                title="Supprimer cette formation"
+              >
+                <Trash2 size={16} />
+              </button>
+              
               <Input
                 placeholder="Diplôme"
                 value={edu.degree || ''}
@@ -142,7 +158,7 @@ const EducationSection = ({ data, updateData }) => {
           ))}
           <button
             onClick={addEducation}
-            className="mt-2 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+            className="mt-2 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 flex items-center justify-center"
           >
             Ajouter une formation
           </button>

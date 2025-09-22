@@ -2,7 +2,7 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card.jsx';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { ChevronUp, Calendar } from 'lucide-react';
+import { ChevronUp, Calendar, Trash2 } from 'lucide-react';
 
 const ExperienceSection = ({ data, updateData }) => {
   const [isExpanded, setIsExpanded] = React.useState(false);
@@ -39,7 +39,13 @@ const ExperienceSection = ({ data, updateData }) => {
   };
 
   const addExperience = () => {
-    updateData('experience', [...data, { isCurrent: false }]);
+    updateData('experience', [...data, {}]);
+  };
+
+  // FONCTION POUR SUPPRIMER UNE EXPÉRIENCE
+  const removeExperience = (index) => {
+    const newData = data.filter((_, i) => i !== index);
+    updateData('experience', newData);
   };
 
   return (
@@ -53,7 +59,17 @@ const ExperienceSection = ({ data, updateData }) => {
       {isExpanded && (
         <CardContent className="pt-0 space-y-4">
           {data.map((exp, index) => (
-            <div key={index} className="space-y-2">
+            <div key={index} className="space-y-2 p-4 bg-gray-750 rounded-lg border border-gray-600 relative">
+              
+              {/* BOUTON SUPPRIMER - CONSERVÉ */}
+              <button
+                onClick={() => removeExperience(index)}
+                className="absolute top-2 right-2 p-1 text-red-400 hover:text-red-300 hover:bg-red-900 rounded transition-colors"
+                title="Supprimer cette expérience"
+              >
+                <Trash2 size={16} />
+              </button>
+              
               <Input
                 placeholder="Titre du poste"
                 value={exp.jobTitle || ''}
@@ -64,12 +80,6 @@ const ExperienceSection = ({ data, updateData }) => {
                 placeholder="Employeur"
                 value={exp.employer || ''}
                 onChange={(e) => handleChange(index, 'employer', e.target.value)}
-                className="w-full bg-gray-800 border-gray-600 text-white placeholder-gray-400"
-              />
-              <Input
-                placeholder="Ville"
-                value={exp.city || ''}
-                onChange={(e) => handleChange(index, 'city', e.target.value)}
                 className="w-full bg-gray-800 border-gray-600 text-white placeholder-gray-400"
               />
               <div className="flex space-x-2">
@@ -138,15 +148,6 @@ const ExperienceSection = ({ data, updateData }) => {
                 onChange={(e) => handleChange(index, 'description', e.target.value)}
                 className="w-full bg-gray-800 border-gray-600 text-white placeholder-gray-400"
               />
-              <label className="flex items-center">
-                <input
-                  type="checkbox"
-                  checked={exp.isCurrent || false}
-                  onChange={(e) => handleChange(index, 'isCurrent', e.target.checked)}
-                  className="mr-2"
-                />
-                <span className="text-sm text-gray-300">Poste actuel</span>
-              </label>
             </div>
           ))}
           <button

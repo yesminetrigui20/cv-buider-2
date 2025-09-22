@@ -3,7 +3,7 @@ import Header from './components/Header.jsx';
 import FormSection from './components/FormSection.jsx';
 import CVPreview from './components/CVPreview.jsx';
 import GoogleLogin from './components/GoogleLogin.jsx';
-import LinkedInLogin from './components/LinkedInLogin.jsx'; // Ajout de l'import
+import LinkedInLogin from './components/LinkedInLogin.jsx';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import './App.css';
@@ -18,34 +18,10 @@ const initialCVData = {
   additionalSections: {},
 };
 
-// Fonction pour convertir oklch en hex (approximation)
-const oklchToHex = (oklchValue) => {
-  if (!oklchValue || !oklchValue.includes('oklch')) return null;
-  
-  try {
-    // Extraction des valeurs depuis la chaîne oklch
-    const values = oklchValue.match(/oklch\(([^)]+)\)/)[1].split(/\s+/);
-    if (values.length < 3) return null;
-    
-    const l = parseFloat(values[0]);
-    const c = parseFloat(values[1]);
-    const h = parseFloat(values[2]);
-    
-    // Conversion approximative oklch vers hex
-    // Note: Ceci est une approximation simplifiée
-    if (l > 0.7) return '#ffffff'; // Clair → blanc
-    if (l > 0.4) return '#888888'; // Moyen → gris
-    return '#000000'; // Foncé → noir
-  } catch (e) {
-    console.warn('Erreur conversion oklch:', e);
-    return null;
-  }
-};
-
 function App() {
   const [cvData, setCvData] = useState(initialCVData);
   const [isGenerating, setIsGenerating] = useState(false);
-  const [cvTitle, setCvTitle] = useState('Mon CV'); // État pour le titre du CV
+  const [cvTitle, setCvTitle] = useState('Mon CV');
   const cvRef = useRef(null);
 
   const updateData = (section, newData) => {
@@ -60,15 +36,11 @@ function App() {
   };
 
   const handleLinkedInSuccess = (response) => {
-  console.log('✅ Vérification LinkedIn réussie:', response);
-  
-  // Stocker seulement le statut de vérification
-  localStorage.setItem('linkedin_verified', 'true');
-  localStorage.setItem('linkedin_verification_token', response.token);
-  
-  // Optionnel: Afficher un message à l'utilisateur
-  alert('✅ Vérification LinkedIn réussie ! Votre identité a été confirmée.');
-};
+    console.log('✅ Vérification LinkedIn réussie:', response);
+    localStorage.setItem('linkedin_verified', 'true');
+    localStorage.setItem('linkedin_verification_token', response.token);
+    alert('✅ Vérification LinkedIn réussie ! Votre identité a été confirmée.');
+  };
 
   const handleDownloadCV = async () => {
     setIsGenerating(true);
@@ -89,15 +61,13 @@ function App() {
               // Sauvegarder la valeur originale
               el.dataset[`original${prop}`] = el.style[prop];
               
-              // Convertir oklch en une couleur supportée
-              const hexColor = oklchToHex(value);
-              if (hexColor) {
-                el.style[prop] = hexColor;
+              // Remplacer oklch par des couleurs standard pour html2canvas
+              if (prop === 'color') {
+                el.style[prop] = '#000000'; // Texte en noir
+              } else if (prop === 'backgroundColor') {
+                el.style[prop] = '#ffffff'; // Fond en blanc
               } else {
-                // Valeurs par défaut selon la propriété
-                if (prop === 'color') el.style.color = '#000000';
-                else if (prop === 'backgroundColor') el.style.backgroundColor = '#ffffff';
-                else el.style.borderColor = '#cccccc';
+                el.style[prop] = '#cccccc'; // Bordures en gris
               }
             }
           });
@@ -125,7 +95,7 @@ function App() {
         scale: 2,
         useCORS: true,
         backgroundColor: '#ffffff',
-        logging: true,
+        logging: false, // Désactiver les logs pour meilleure performance
         onclone: (clonedDoc) => {
           // Appliquer les mêmes corrections au clone
           const elements = clonedDoc.querySelectorAll('*');
@@ -135,9 +105,12 @@ function App() {
             ['color', 'backgroundColor', 'borderColor'].forEach(prop => {
               const value = styles[prop];
               if (value && value.includes('oklch')) {
-                const hexColor = oklchToHex(value);
-                if (hexColor) {
-                  el.style[prop] = hexColor;
+                if (prop === 'color') {
+                  el.style[prop] = '#000000';
+                } else if (prop === 'backgroundColor') {
+                  el.style[prop] = '#ffffff';
+                } else {
+                  el.style[prop] = '#cccccc';
                 }
               }
             });
@@ -177,7 +150,7 @@ function App() {
     } catch (error) {
       console.error('Erreur lors de la génération:', error);
       
-      // PDF de secours avec toutes les données
+      // Fallback: créer un PDF basique avec les données textuelles
       try {
         const pdf = new jsPDF();
         let yPosition = 15;
@@ -254,12 +227,14 @@ function App() {
             }
             
             pdf.setFont(undefined, 'bold');
-            pdf.text(`${exp.position || ''} ${exp.company ? `- ${exp.company}` : ''}`, 20, yPosition);
+            pdf.text(`${exp.jobTitle || ''} ${exp.employer ? `- ${exp.employer}` : ''}`, 20, yPosition);
             yPosition += 5;
             
             pdf.setFont(undefined, 'normal');
-            if (exp.period) {
-              pdf.text(`Période: ${exp.period}`, 20, yPosition);
+            if (exp.startMonth || exp.startYear || exp.endMonth || exp.endYear) {
+              const start = exp.startMonth && exp.startYear ? `${exp.startMonth} ${exp.startYear}` : '';
+              const end = exp.endMonth && exp.endYear ? `${exp.endMonth} ${exp.endYear}` : 'Présent';
+              pdf.text(`Période: ${start} - ${end}`, 20, yPosition);
               yPosition += 5;
             }
             if (exp.description) {
@@ -284,7 +259,7 @@ function App() {
 
   return (
     <div className="min-h-screen bg-gray-800 dark flex flex-col">
-      {/* Header avec les props nécessaires */}
+      
       <Header 
         cvTitle={cvTitle} 
         setCvTitle={setCvTitle}
@@ -292,7 +267,7 @@ function App() {
         isGenerating={isGenerating}
       />
       
-      {/* Section des boutons de connexion - AJOUT DE LINKEDIN */}
+      
       <div className="flex justify-center space-x-4 py-4 bg-gray-800 border-b border-gray-700">
         <GoogleLogin onSuccess={handleGoogleSuccess} />
         <LinkedInLogin onSuccess={handleLinkedInSuccess} />
